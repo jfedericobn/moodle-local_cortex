@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/cortex/db" VERSION="2026071300" COMMENT="Cortex knowledge ingestion linkage tables."
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="local_cortex_course" COMMENT="Per-course Cortex enablement and ingestion linkage.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Moodle course id."/>
+        <FIELD NAME="enabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Whether Cortex knowledge is enabled for this course."/>
+        <FIELD NAME="externalcorpusid" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Stable external corpus id sent to Cortex (moodle-course-{id})."/>
+        <FIELD NAME="referencecode" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Cortex opaque reference code for the Service Plane."/>
+        <FIELD NAME="jobid" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Latest Cortex ingestion job id."/>
+        <FIELD NAME="corpusid" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Cortex corpus id from the submit response."/>
+        <FIELD NAME="contenthash" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="SHA-256 of the last submitted .mbz."/>
+        <FIELD NAME="status" TYPE="char" LENGTH="32" NOTNULL="true" DEFAULT="idle" SEQUENCE="false" COMMENT="idle/queued/processing/ready/failed/disabled."/>
+        <FIELD NAME="stage" TYPE="char" LENGTH="64" NOTNULL="false" SEQUENCE="false" COMMENT="Latest stage from poll/callback."/>
+        <FIELD NAME="percent" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Percent complete."/>
+        <FIELD NAME="completionsource" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="callback/poll/idempotent."/>
+        <FIELD NAME="errormessage" TYPE="char" LENGTH="1333" NOTNULL="false" SEQUENCE="false" COMMENT="Last failure detail."/>
+        <FIELD NAME="timeenabled" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="When enable was last turned on."/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="courseid" UNIQUE="true" FIELDS="courseid"/>
+        <INDEX NAME="status" UNIQUE="false" FIELDS="status"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="local_cortex_callback_token" COMMENT="One-time callback tokens for Cortex ingestion completion.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course the callback is for."/>
+        <FIELD NAME="tokenhash" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" COMMENT="SHA-256 hex of the raw one-time token."/>
+        <FIELD NAME="jobid" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Cortex job id, bound after the submit response."/>
+        <FIELD NAME="status" TYPE="char" LENGTH="16" NOTNULL="true" DEFAULT="unused" SEQUENCE="false" COMMENT="unused/used/expired."/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User who triggered the mint."/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timeexpires" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timeused" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="tokenhash" UNIQUE="true" FIELDS="tokenhash"/>
+        <INDEX NAME="courseidstatus" UNIQUE="false" FIELDS="courseid, status"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>
