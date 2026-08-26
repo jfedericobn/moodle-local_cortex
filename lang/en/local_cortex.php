@@ -58,6 +58,7 @@ $string['referencecode'] = 'Reference code';
 $string['jobid'] = 'Job id';
 $string['corpusid'] = 'Corpus id';
 $string['stage'] = 'Stage';
+$string['percent'] = 'Progress';
 $string['completionsource'] = 'Completion source';
 $string['lasterror'] = 'Last error';
 $string['lastupdated'] = 'Last updated';

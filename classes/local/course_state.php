@@ -111,14 +111,44 @@ class course_state {
     /**
      * Mark a course queued for submission.
      *
+     * Clears prior-run fields so the UI and safety-net poller cannot keep
+     * showing or advancing state from the previous job.
+     *
      * @param int $courseid
      */
     public static function mark_queued(int $courseid): void {
         $record = self::ensure($courseid);
         $record->status = self::STATUS_QUEUED;
         $record->stage = 'queued';
+        $record->jobid = null;
+        $record->referencecode = null;
+        $record->completionsource = null;
+        $record->contenthash = null;
+        $record->percent = 0;
         $record->errormessage = null;
         self::save($record);
+
+        // Drop any unused callback token from the previous run.
+        callback_token::expire_active_for_course($courseid);
+    }
+
+    /**
+     * Whether a terminal update belongs to the course's current run.
+     *
+     * @param \stdClass $record
+     * @param array $data Optional keys including job_id.
+     * @return bool
+     */
+    public static function accepts_run_update(\stdClass $record, array $data): bool {
+        if (empty($data['job_id'])) {
+            return true;
+        }
+        $incoming = (string)$data['job_id'];
+        $current = (string)($record->jobid ?? '');
+        // Require an exact match against the job recorded for this run. An empty
+        // jobid means the prior run was cleared (or submit has not recorded one
+        // yet), so stale callbacks/polls must not apply.
+        return $current !== '' && $current === $incoming;
     }
 
     /**
@@ -180,9 +210,35 @@ class course_state {
         }
         $record->status = self::STATUS_PROCESSING;
         $record->stage = 'submitted';
+        $record->percent = 0;
+        $record->completionsource = null;
         // Successful accept replaces any previous submit failure message.
         $record->errormessage = null;
         self::save($record);
+    }
+
+    /**
+     * Record a non-terminal Cortex job update for the currently active job.
+     *
+     * @param int $courseid
+     * @param string $jobid
+     * @param array $data Cortex job response.
+     * @return bool False when the response belongs to a stale job.
+     */
+    public static function record_job_progress(int $courseid, string $jobid, array $data): bool {
+        $record = self::get($courseid);
+        if (!$record || (string)($record->jobid ?? '') !== $jobid || self::is_terminal($record->status)) {
+            return false;
+        }
+
+        $record->status = self::STATUS_PROCESSING;
+        $record->stage = (string)($data['stage'] ?? 'processing');
+        $record->percent = max(0, min(100, (int)($data['percent_complete'] ?? 0)));
+        // A completion source only describes a terminal result.
+        $record->completionsource = null;
+        $record->errormessage = null;
+        self::save($record);
+        return true;
     }
 
     /**
@@ -217,6 +273,10 @@ class course_state {
     ): bool {
         $record = self::ensure($courseid);
         $newstatus = ($cortexstate === 'ready') ? self::STATUS_READY : self::STATUS_FAILED;
+
+        if (!self::accepts_run_update($record, $data)) {
+            return false;
+        }
 
         // Already applied for the same job: no-op.
         if (self::is_terminal($record->status) && $record->status === $newstatus) {

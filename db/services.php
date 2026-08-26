@@ -32,11 +32,21 @@ $functions = [
         'ajax'        => false,
         'capabilities' => 'local/cortex:generatecallback',
     ],
+    'local_cortex_get_course_status' => [
+        'classname'   => 'local_cortex\external\get_course_status',
+        'description' => 'Fetch Cortex ingestion status for a course (AJAX polling).',
+        'type'        => 'read',
+        'ajax'        => true,
+        'capabilities' => 'local/cortex:viewstatus',
+    ],
 ];
 
 $services = [
     'Cortex ingestion' => [
-        'functions'       => ['local_cortex_generate_callback_url'],
+        'functions'       => [
+            'local_cortex_generate_callback_url',
+            'local_cortex_get_course_status',
+        ],
         'restrictedusers' => 1,
         'enabled'         => 0,
         'shortname'       => 'local_cortex',

@@ -77,12 +77,16 @@ if ($data = $mform->get_data()) {
 
 $mform->set_data(['enabled' => $row ? (int)$row->enabled : 0]);
 
+$PAGE->requires->js_call_amd('local_cortex/status_poll', 'init', [
+    ['courseid' => $courseid],
+]);
+
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('coursesettings', 'local_cortex'));
 if (!config::is_configured()) {
     echo $OUTPUT->notification(get_string('notconfigured', 'local_cortex'), \core\output\notification::NOTIFY_WARNING);
 }
-echo local_cortex_render_status($row);
+echo local_cortex_render_status($row, $courseid);
 $mform->display();
 echo $OUTPUT->footer();
 

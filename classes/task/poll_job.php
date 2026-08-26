@@ -77,6 +77,11 @@ class poll_job extends \core\task\adhoc_task {
             return;
         }
 
+        // A newer resync cleared/replaced the job id — abandon this poll chain.
+        if ((string)($row->jobid ?? '') === '' || (string)$row->jobid !== $jobid) {
+            return;
+        }
+
         if (!config::is_configured()) {
             return;
         }
@@ -84,6 +89,12 @@ class poll_job extends \core\task\adhoc_task {
         $response = ingest_client::instance()->get_job($jobid, config::tenant_id());
         if ((int)$response['httpcode'] !== 200) {
             $this->maybe_reschedule($courseid, $jobid, $attempt);
+            return;
+        }
+
+        // Re-check after the network call in case a resync started meanwhile.
+        $row = course_state::get($courseid);
+        if (!$row || (string)($row->jobid ?? '') !== $jobid || course_state::is_terminal($row->status)) {
             return;
         }
 
@@ -99,8 +110,8 @@ class poll_job extends \core\task\adhoc_task {
             return;
         }
 
-        // Still processing: refresh the stage and try again later.
-        course_state::mark_processing($courseid, (string)($response['body']['stage'] ?? 'processing'));
+        // Still processing: refresh the Cortex-reported progress and try again later.
+        course_state::record_job_progress($courseid, $jobid, $response['body']);
         $this->maybe_reschedule($courseid, $jobid, $attempt);
     }
 

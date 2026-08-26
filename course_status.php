@@ -42,9 +42,13 @@ $PAGE->set_heading($course->fullname);
 
 $row = course_state::get($courseid);
 
+$PAGE->requires->js_call_amd('local_cortex/status_poll', 'init', [
+    ['courseid' => $courseid],
+]);
+
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('coursestatus', 'local_cortex'));
-echo local_cortex_render_status($row);
+echo local_cortex_render_status($row, $courseid);
 echo $OUTPUT->single_button(
     new moodle_url('/course/view.php', ['id' => $courseid]),
     get_string('backtocourse', 'local_cortex'),

@@ -64,41 +64,34 @@ function local_cortex_ping_health() {
 }
 
 /**
+ * Build a status export array for AJAX / templates.
+ *
+ * @param \stdClass|null $row The local_cortex_course row, or null if none yet.
+ * @return array
+ */
+function local_cortex_status_export(?stdClass $row): array {
+    return \local_cortex\local\status_presenter::export($row);
+}
+
+/**
+ * Render the status table HTML from an export payload.
+ *
+ * @param array $payload From local_cortex_status_export().
+ * @return string HTML table (no wrapper).
+ */
+function local_cortex_render_status_table(array $payload): string {
+    return \local_cortex\local\status_presenter::render_table($payload);
+}
+
+/**
  * Render a read-only status summary for a course's Cortex ingestion row.
  *
  * @param stdClass|null $row The local_cortex_course row, or null if none yet.
+ * @param int|null $courseid Course id for the AJAX poller (defaults to $row->courseid).
  * @return string HTML.
  */
-function local_cortex_render_status(?stdClass $row): string {
-    $status = $row->status ?? \local_cortex\local\course_state::STATUS_IDLE;
-    $statuskey = 'status_' . $status;
-    $statuslabel = get_string_manager()->string_exists($statuskey, 'local_cortex')
-        ? get_string($statuskey, 'local_cortex')
-        : $status;
-
-    $rows = [];
-    $rows[get_string('status', 'local_cortex')] = $statuslabel;
-    $rows[get_string('referencecode', 'local_cortex')] = $row->referencecode ?? '-';
-    $rows[get_string('jobid', 'local_cortex')] = $row->jobid ?? '-';
-    $rows[get_string('corpusid', 'local_cortex')] = $row->corpusid ?? '-';
-    $rows[get_string('stage', 'local_cortex')] = $row->stage ?? '-';
-    $rows[get_string('completionsource', 'local_cortex')] = $row->completionsource ?? '-';
-    // Only surface Last error for a failed run; stale messages from earlier
-    // attempts must not appear once status has moved on.
-    if (($row->status ?? '') === \local_cortex\local\course_state::STATUS_FAILED
-            && !empty($row->errormessage)) {
-        $rows[get_string('lasterror', 'local_cortex')] = s($row->errormessage);
-    }
-    $rows[get_string('lastupdated', 'local_cortex')] = !empty($row->timemodified)
-        ? userdate((int)$row->timemodified)
-        : get_string('never', 'local_cortex');
-
-    $table = new html_table();
-    $table->attributes['class'] = 'generaltable';
-    foreach ($rows as $label => $value) {
-        $table->data[] = [$label, $value];
-    }
-    return html_writer::table($table);
+function local_cortex_render_status(?stdClass $row, ?int $courseid = null): string {
+    return \local_cortex\local\status_presenter::render($row, $courseid);
 }
 
 /**
