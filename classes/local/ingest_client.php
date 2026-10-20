@@ -20,8 +20,9 @@ namespace local_cortex\local;
  * Thin HTTP client for the Cortex ingest plane.
  *
  * @package    local_cortex
- * @copyright  2026 Cortex integration
+ * @copyright  2026 onwards, Blindside Networks Inc
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 class ingest_client {
     /** @var int Connect timeout (seconds). */

@@ -18,8 +18,9 @@
  * Read-only Cortex ingestion status page for a course.
  *
  * @package    local_cortex
- * @copyright  2026 Cortex integration
+ * @copyright  2026 onwards, Blindside Networks Inc
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 
 require(__DIR__ . '/../../config.php');

@@ -17,8 +17,9 @@
  * Poll Cortex course ingestion status via AJAX.
  *
  * @module     local_cortex/status_poll
- * @copyright  2026 Cortex integration
+ * @copyright  2026 onwards, Blindside Networks Inc
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 
 import Ajax from 'core/ajax';

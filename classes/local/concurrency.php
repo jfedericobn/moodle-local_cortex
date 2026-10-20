@@ -24,8 +24,9 @@ use core\lock\lock_config;
  * semaphore over N named Moodle locks.
  *
  * @package    local_cortex
- * @copyright  2026 Cortex integration
+ * @copyright  2026 onwards, Blindside Networks Inc
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 class concurrency {
     /** @var string Lock factory type. */

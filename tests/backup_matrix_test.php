@@ -23,8 +23,9 @@ use local_cortex\local\backup_exporter;
  *
  * @package    local_cortex
  * @covers     \local_cortex\local\backup_exporter
- * @copyright  2026 Cortex integration
+ * @copyright  2026 onwards, Blindside Networks Inc
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 final class backup_matrix_test extends \advanced_testcase {
     /**

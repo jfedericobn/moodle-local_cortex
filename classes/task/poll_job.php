@@ -24,8 +24,9 @@ use local_cortex\local\ingest_client;
  * Adhoc task: poll a Cortex ingestion job as a callback-miss safety net.
  *
  * @package    local_cortex
- * @copyright  2026 Cortex integration
+ * @copyright  2026 onwards, Blindside Networks Inc
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 class poll_job extends \core\task\adhoc_task {
     /** @var int[] Delay before each attempt: +15m, +30m, +1h, +2h. */

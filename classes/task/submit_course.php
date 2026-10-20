@@ -27,8 +27,9 @@ use local_cortex\local\ingest_client;
  * Adhoc task: build a content-only backup and submit it to Cortex asynchronously.
  *
  * @package    local_cortex
- * @copyright  2026 Cortex integration
+ * @copyright  2026 onwards, Blindside Networks Inc
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 class submit_course extends \core\task\adhoc_task {
     /** @var int Delay (seconds) before retrying when all concurrency slots are busy. */

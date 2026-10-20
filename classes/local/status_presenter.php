@@ -22,8 +22,9 @@ defined('MOODLE_INTERNAL') || die();
  * Present Cortex course ingestion status for PHP pages and AJAX.
  *
  * @package    local_cortex
- * @copyright  2026 Cortex integration
+ * @copyright  2026 onwards, Blindside Networks Inc
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 class status_presenter {
     /**
