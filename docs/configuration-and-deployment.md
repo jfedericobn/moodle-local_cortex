@@ -109,7 +109,9 @@ The Cortex ingest API must be exposed to Moodle and the deployed processor
 registry must list `moodle_mbz` with `mbz` support:
 
 ```bash
-curl -fsS "$CORTEX_INGEST_URL/api/v1/ingest/content-types"
+curl -fsS -H "Authorization: Bearer $CORTEX_API_KEY" \
+  "$CORTEX_INGEST_URL/api/v1/ingest/content-types"
+# $CORTEX_API_KEY: the plugin's Cortex API key setting (Cortex 0.2)
 ```
 
 ## Network and reverse-proxy requirements

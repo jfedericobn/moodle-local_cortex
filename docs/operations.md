@@ -119,14 +119,16 @@ Actions:
 1. Query Cortex directly:
 
    ```bash
-   curl -fsS \
-     "$CORTEX_INGEST_URL/api/v1/ingest/jobs/$JOB_ID?tenant_id=$CORTEX_TENANT_ID"
+   curl -fsS -H "Authorization: Bearer $CORTEX_API_KEY" \
+     "$CORTEX_INGEST_URL/api/v1/ingest/jobs/$JOB_ID"
    ```
 
-2. Inspect Cortex worker logs and queue health:
+2. Inspect Cortex worker logs and queue health (a Cortex operator token, on the
+   Management plane):
 
    ```bash
-   curl -fsS "$CORTEX_INGEST_URL/health/queue"
+   curl -fsS -H "Authorization: Bearer $CORTEX_OPERATOR_TOKEN" \
+     "$CORTEX_MANAGEMENT_URL/api/v1/management/health/queue"
    ```
 
 3. Confirm `CALLBACK_DISPATCH_MODE=http`.
@@ -165,10 +167,15 @@ The polling path should still update the course for a reachable Cortex job.
 
 ## Manual diagnostics
 
+Cortex 0.2 authenticates every Ingest request: `$CORTEX_API_KEY` is the key
+saved in the plugin's **Cortex API key** setting (scopes `ingest:write` and
+`ingest:read`). The tenant comes from the key.
+
 ### Discover supported Cortex types
 
 ```bash
-curl -fsS "$CORTEX_INGEST_URL/api/v1/ingest/content-types"
+curl -fsS -H "Authorization: Bearer $CORTEX_API_KEY" \
+  "$CORTEX_INGEST_URL/api/v1/ingest/content-types"
 ```
 
 Confirm an entry for:
@@ -183,8 +190,8 @@ Confirm an entry for:
 ### Inspect a job
 
 ```bash
-curl -fsS \
-  "$CORTEX_INGEST_URL/api/v1/ingest/jobs/$JOB_ID?tenant_id=$CORTEX_TENANT_ID"
+curl -fsS -H "Authorization: Bearer $CORTEX_API_KEY" \
+  "$CORTEX_INGEST_URL/api/v1/ingest/jobs/$JOB_ID"
 ```
 
 Keep the result correlated with the Moodle course's `referencecode`, `jobid`,
