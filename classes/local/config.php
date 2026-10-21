@@ -49,6 +49,23 @@ class config {
     }
 
     /**
+     * @return string Cortex API key for the Ingest plane (scopes ingest:write, ingest:read).
+     */
+    public static function api_key(): string {
+        return trim((string)get_config('local_cortex', 'apikey'));
+    }
+
+    /**
+     * Authorization header for Cortex requests, or none when no key is configured.
+     *
+     * @return string[]
+     */
+    public static function auth_headers(): array {
+        $key = self::api_key();
+        return $key === '' ? [] : ['Authorization: Bearer ' . $key];
+    }
+
+    /**
      * @return string Shared HMAC signing secret.
      */
     public static function callback_secret(): string {
@@ -99,6 +116,7 @@ class config {
     public static function is_configured(): bool {
         return self::ingest_url() !== ''
             && self::tenant_id() !== ''
+            && self::api_key() !== ''
             && self::callback_secret() !== '';
     }
 

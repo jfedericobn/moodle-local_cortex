@@ -52,7 +52,10 @@ class ingest_client {
     public function submit(array $payload): array {
         $url = config::ingest_url() . '/api/v1/ingest/sources';
         $curl = $this->new_curl(self::SUBMIT_TIMEOUT);
-        $curl->setHeader(['Content-Type: application/json', 'Accept: application/json']);
+        $curl->setHeader(array_merge(
+            ['Content-Type: application/json', 'Accept: application/json'],
+            config::auth_headers()
+        ));
         $json = json_encode($payload, JSON_UNESCAPED_SLASHES);
         $raw = $curl->post($url, $json);
         return $this->wrap_response($curl, $raw);
@@ -69,7 +72,7 @@ class ingest_client {
         $url = config::ingest_url() . '/api/v1/ingest/jobs/' . rawurlencode($jobid)
             . '?tenant_id=' . rawurlencode($tenantid);
         $curl = $this->new_curl(self::READ_TIMEOUT);
-        $curl->setHeader(['Accept: application/json']);
+        $curl->setHeader(array_merge(['Accept: application/json'], config::auth_headers()));
         $raw = $curl->get($url);
         return $this->wrap_response($curl, $raw);
     }
@@ -85,7 +88,7 @@ class ingest_client {
             return false;
         }
         $curl = $this->new_curl(self::READ_TIMEOUT);
-        $curl->setHeader(['Accept: application/json']);
+        $curl->setHeader(array_merge(['Accept: application/json'], config::auth_headers()));
         $curl->get($base . '/api/v1/ingest');
         return (int)($curl->get_info()['http_code'] ?? 0) === 200;
     }

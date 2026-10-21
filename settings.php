@@ -58,6 +58,14 @@ if ($hassiteconfig) {
         PARAM_RAW_TRIMMED
     ));
 
+    // Cortex API key (scopes ingest:write and ingest:read) sent on every request.
+    $settings->add(new admin_setting_configpasswordunmask(
+        'local_cortex/apikey',
+        get_string('settings_apikey', 'local_cortex'),
+        get_string('settings_apikey_desc', 'local_cortex'),
+        ''
+    ));
+
     // Shared HMAC signing secret (must equal Cortex CALLBACK_SIGNING_SECRET).
     $settings->add(new admin_setting_configpasswordunmask(
         'local_cortex/callbacksecret',
