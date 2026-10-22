@@ -78,6 +78,23 @@ class ingest_client {
     }
 
     /**
+     * Erase a corpus and everything Cortex derived from it (Cortex 0.2, V2.7).
+     *
+     * Needs an API key with the ingest:delete scope. Returns 202 when accepted and 200
+     * when the corpus is already being erased.
+     *
+     * @param string $referencecode
+     * @return array{httpcode:int,body:array,raw:string}
+     */
+    public function erase(string $referencecode): array {
+        $url = config::ingest_url() . '/api/v1/ingest/corpora/' . rawurlencode($referencecode);
+        $curl = $this->new_curl(self::READ_TIMEOUT);
+        $curl->setHeader(array_merge(['Accept: application/json'], config::auth_headers()));
+        $raw = $curl->delete($url);
+        return $this->wrap_response($curl, $raw);
+    }
+
+    /**
      * Lightweight connectivity probe against the ingest plane.
      *
      * @return bool True when the ingest plane responds with HTTP 200.

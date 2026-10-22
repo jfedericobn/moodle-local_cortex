@@ -67,6 +67,8 @@ $string['never'] = 'Never';
 $string['backtocourse'] = 'Back to course';
 
 // Errors.
+$string['error_erase_failed'] = 'Cortex did not accept the erasure of the course corpus (HTTP {$a}); the task will retry.';
+$string['error_erase_not_configured'] = 'Cortex is not configured; the erasure of the deleted course corpus will retry.';
 $string['error_mbz_too_large'] = 'The course backup ({$a->size} bytes) exceeds the configured limit ({$a->limit} bytes) and was not submitted.';
 $string['error_users_not_forced'] = 'The backup could not force user data off; refusing to submit for privacy reasons.';
 $string['error_submit_failed'] = 'Submitting the backup to Cortex failed: {$a}';
@@ -97,6 +99,7 @@ $string['settings_health_unknown'] = 'Connectivity has not been checked yet. Sav
 // Tasks.
 $string['task_submit_course'] = 'Submit course backup to Cortex';
 $string['task_poll_job'] = 'Poll Cortex ingestion job status';
+$string['task_erase_corpus'] = 'Erase a deleted course\'s corpus in Cortex';
 
 // Privacy.
 $string['privacy:metadata:cortex'] = 'Content-only course backups (excluding user data) are sent to the external Cortex knowledge service for ingestion.';

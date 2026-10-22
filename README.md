@@ -19,6 +19,7 @@ submit_course: acquire slot -> content-only backup -> size guard
 Cortex worker --> POST {base}/local/cortex/callback.php?token=OTT  (signed)
              --> verify HMAC + consume token -> mark ready/failed
 poll_job (safety net) --> GET /api/v1/ingest/jobs/{id} at +15m/+30m/+1h/+2h
+course deleted --> queue adhoc erase_corpus -> DELETE /api/v1/ingest/corpora/{ref}
 ```
 
 ## What gets sent

@@ -66,6 +66,20 @@ callback already made the row terminal. If all attempts finish while the job
 is still non-terminal, the course remains `processing`; investigate Cortex
 and use the job ID rather than assuming the ingestion failed.
 
+### `erase_corpus`
+
+Deleting a course erases its Cortex corpus (Cortex 0.2, V2.7). The
+`course_deleted` observer queues this task with the course's reference code
+and removes the plugin's rows for the course. The task calls
+`DELETE /api/v1/ingest/corpora/{reference_code}`: `202` (accepted), `200`
+(already erasing), and `404` (nothing to erase) finish it; any other answer
+fails it and Moodle retries with backoff. Cortex hides the corpus at once and
+purges it asynchronously; the receipt is visible to Cortex operators
+(`cortex erasures list --tenant T`). A key without `ingest:delete` gets `403`
+and the task keeps retrying until the key is replaced.
+
+A course that was never submitted (no reference code) queues nothing.
+
 ## Common failures
 
 ### Course stays `queued`
@@ -168,8 +182,8 @@ The polling path should still update the course for a reachable Cortex job.
 ## Manual diagnostics
 
 Cortex 0.2 authenticates every Ingest request: `$CORTEX_API_KEY` is the key
-saved in the plugin's **Cortex API key** setting (scopes `ingest:write` and
-`ingest:read`). The tenant comes from the key.
+saved in the plugin's **Cortex API key** setting (scopes `ingest:write`,
+`ingest:read`, and `ingest:delete`). The tenant comes from the key.
 
 ### Discover supported Cortex types
 

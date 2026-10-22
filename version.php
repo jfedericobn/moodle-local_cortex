@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_cortex';
-$plugin->version   = 2026102100;
+$plugin->version   = 2026102200;
 $plugin->requires  = 2024100700; // Moodle 4.5+.
 $plugin->maturity  = MATURITY_ALPHA;
 $plugin->release   = '0.2.0';

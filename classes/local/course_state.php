@@ -122,7 +122,9 @@ class course_state {
         $record->status = self::STATUS_QUEUED;
         $record->stage = 'queued';
         $record->jobid = null;
-        $record->referencecode = null;
+        // The reference code is kept: Cortex keeps a course's corpus and its code across
+        // resubmissions, and deleting the course while a resync is queued must still
+        // erase that corpus.
         $record->completionsource = null;
         $record->contenthash = null;
         $record->percent = 0;
